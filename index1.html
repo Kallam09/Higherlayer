@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Controller</title>
+</head>
+<body>
+    <h1>Welcome to the Video Controller!</h1>
+    <p>Click the buttons below to request videos:</p>
+
+    <button onclick="requestVideo('video1')">Request Video 1</button>
+    <button onclick="requestVideo('video2')">Request Video 2</button>
+
+    <div id="videoContainer"></div>
+
+    <script>
+        function requestVideo(videoName) {
+            // Make an AJAX request to your Flask controller
+            fetch('/' + videoName)
+                .then(response => response.blob())
+                .then(blob => {
+                    const videoBlob = new Blob([blob], { type: 'video/mp4' });
+                    const videoUrl = URL.createObjectURL(videoBlob);
+
+                    // Create a video element to display the video
+                    const videoElement = document.createElement('video');
+                    videoElement.src = videoUrl;
+                    videoElement.controls = true;
+
+                    // Append the video element to the videoContainer div
+                    const videoContainer = document.getElementById('videoContainer');
+                    videoContainer.innerHTML = '';
+                    videoContainer.appendChild(videoElement);
+                })
+                .catch(error => {
+                    console.error('Error requesting video:', error);
+                    alert('Error: ' + error.message);
+                });
+        }
+    </script>
+</body>
+</html>
